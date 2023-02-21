@@ -1,5 +1,7 @@
 server/node_modules
 client/node_modules
+client/src/fol
+client/src/css
 server/.env
 server/routes/.env
 server/controllers/.env
