@@ -1,0 +1,142 @@
+import express from "express";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
+import { message } from "./message";
+import signup from "./routes/signup.js";
+import cookieparser from "cookie-parser";
+import api from "./routes/api.js";
+import Chat from "./model/Chat.js";
+import User from "./model/User.js";
+const app = express();
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:8080"],
+    credentials: true,
+  })
+);
+app.use(cookieparser("tp07089314662"));
+const server = http.createServer(app);
+const PORT = process.env.PORT || 8080;
+/*app.use(function(req, res, next) {
+  res.header('Content-Type', 'application/json;charset=UTF-8')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  )
+  next()7
+});*/
+(async () => {
+  let y = await Chat.find({});
+  console.log(JSON.stringify(y, null, 2));
+})();
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log(`${socket.id} just connected`);
+  socket.on("disconnect", (data?: any) => {
+    console.log("a user just disconnect");
+  });
+  socket.on("message", (data: message) => {
+    console.log(data);
+    socket.emit("messages", data);
+  });
+  socket.on("newMessage", async (data: any) => {
+    let q = false;
+    console.log(q);
+    const mail = await User.findOne({ _id: data.from }).select("email");
+//    const check = await Chat.find({ email: mail.email });
+//    check.forEach(async (value: any) => {
+//      value!.chats!.message.forEach(async (index: any) => {
+//        console.log(index);
+        console.log('xx')
+//        if (index.hasOwnProperty(data.from)) {
+//          q = true;
+//          console.log(q);
+          /* const result = await Chat.updateMany({_id: data.to},{
+          $push: {
+              [`chats.message`]: [{
+                [`${data.to}`]: data
+              }]
+          }
+          });*/
+          const user = await Chat.findOne({ email: mail.email });
+          console.log(user);
+          user!.chats!.message.forEach(async (e: any) => {
+            q = true;
+            if (e.hasOwnProperty(data.from)) {
+              e[data.from].push({
+                ...data,createdAt: new Date()
+              });
+              console.log(e[data.from]);
+              console.log(JSON.stringify(user,null,2))
+              
+                          try{
+             //  const x = await Chat.deleteOne({email: mail.email});
+//               const y = await Chat.create(user);
+           //    const z = await user!.save();
+//               const xx = await check!.save();
+               console.log('dobe');
+               console.log(JSON.stringify(await Chat.findOne({email: mail.email}),null,2));
+            }
+            catch(err){
+              console.error(err)
+            }
+
+//              let result = await user!.save();
+//              console.log([result, "done"]);
+              //         return;   byb
+              //          console.log([result,"done"])
+              //          }
+            }
+          });
+       try{
+         await Chat.updateOne({email: mail.email},user)
+       } 
+       catch(err){
+         console.log(err)
+       }
+      console.log(q);
+      if (!q) {
+        console.log("i dont ");
+        const result = new Chat({
+          email: mail.email,
+          chats: {
+            message: [
+              {
+                [data.from]: [
+                  {
+                    from: data.from,
+                    to: data.to,
+                    message: data.message,
+                    createdAt: new Date(),
+                  },
+                ],
+              },
+            ],
+          },
+        });
+
+        const response = await result.save();
+      }
+    
+  });
+});
+app.get("/", (req, res) => {
+  res.json({
+    name: "Hello world",
+    c: req.cookies,
+  });
+});
+app!.use("/register", signup);
+app!.use("/api", api);
+server.listen(PORT, () => {
+  console.log(`Server is running at port ${PORT}`);
+});

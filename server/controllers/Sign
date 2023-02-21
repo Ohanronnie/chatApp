@@ -1,0 +1,64 @@
+const {config} = require('dotenv');
+const mongo = require('mongodb').MongoClient;
+config();
+const url = process.env.MONGOURL;
+const toArray = (e,a) => {
+  const _ = {};
+  e.forEach((i,j) => {
+    _[a[j]] = i
+  });
+  return _
+}
+
+const signup = (req,res) => {
+   let [fname,lname,mail,pass] = Object.values(req.body).map(e => e.trim());
+   let objArr = toArray([fname,lname,mail,pass],Object.keys(req.body));
+   console.log(objArr);
+   console.log([fname,lname,mail,pass]);
+   mongo.connect(url,function(err,db){
+     if(err) throw err;
+     let dbo = db.db('capp');
+     dbo.collection('user').insertOne(objArr, function (err,result){
+         if(err) throw err;
+         console.log(result)
+     })
+   });
+};
+const login = (req,res) => {
+    let mail = req.body.mail;
+    let pass = req.body.pass;
+    console.log(req.body)
+    mongo.connect(url, function (err,db){
+        if(err) throw err;
+        let dbo = db.db('capp');
+        dbo.collection('user').findOne({email: mail,pass: pass}, function (err,result){
+        console.log(result)
+           if(result){
+               let options = {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true, // The cookie only accessible by the web server
+        signed: true // Indicates if the cookie should be signed
+    }
+               res.cookie('c_user',{
+                   mail:mail,
+                   pass:pass
+               },options)
+               res.json('valid');
+            }
+            else{
+                res.json('err')
+            }
+        })
+    })
+}
+const user = (req,res) => {
+   mongo.connect(url, function (err,db){
+	if(err) throw err;
+        let dbo = db.db('capp');
+        dbo.collection('user').find({},{projection: {email: 1, _id:0}}).toArray(function (err,result){
+        console.log(result);
+            res.json([result[0].email]);
+        })
+    })
+}
+module.exports = {signup: signup,login:login,users:user,toArray:toArray};
