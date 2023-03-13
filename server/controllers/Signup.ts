@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 import User from "../model/User.js";
 import { Request, Response } from "express";
 config();
-mongoose.connect(
+/*mongoose.connect(
   process.env.MONGOURL!,
   { useUnifiedTopology: true, useNewUrlParser: true },
   () => console.log("Connected")
-);
+);"*/
 //config();
 //const url: string = process.env.MONGOURL;
 const toArray = (e: string[], a: string[]) => {
@@ -84,6 +84,8 @@ const user = async (req: Request, res: Response): Promise<void> => {
   console.log(req.cookies);
   let result = await User.find({}).select("email");
   console.log(result);
-  result.length !== 0 && res.json([result[0].email]);
+  let arrOfMail: string[] = [];
+  result.forEach((e: {_id: string,email: string}) => arrOfMail.push(e.email));
+  result.length !== 0 && res.json([...arrOfMail]);
 };
 export { signup as signup, login as login, user as user, toArray as toArray };
