@@ -6,3 +6,5 @@ server/.env
 server/routes/.env
 server/controllers/.env
 server/model/.env
+server/*/.env
+.gitignore
