@@ -5,18 +5,18 @@ let iterator;
 let newArr = [];
 arr.forEach((e,f) => {
   if(iterator){
-    if(iterator === e){
+    if(iterator === e.from){
       newArr[newArr.length - 1].push(e);
-      iterator = e;
+      iterator = e.from;
     }
     else {
       newArr.push([e]);
-      iterator = e;
+      iterator = e.from;
     }
   }
   else if(!iterator){
     newArr.push([e]);
-    iterator = e;
+    iterator = e.from;
   }
 });
 return newArr

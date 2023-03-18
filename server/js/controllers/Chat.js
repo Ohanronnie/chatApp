@@ -33,6 +33,16 @@ const message = async (req, res) => {
         }
     });
 };
+const messageUser = async (req, res) => {
+    const result = await User.findOne({ _id: req.body.url }).select("firstName lastName");
+    console.log(result, req.body.url);
+    /*const obj = result?.chats.message.forEach((e: any) => {
+      if (e.hasOwnProperty(req.body.url)) {
+        res.json(e[req.body.url]);
+      }
+    });*/
+    result && res.json(result);
+};
 const update = async (req, res) => {
     const result = await Chat.findOne({ email: req.signedCookies.c_user.mail });
     let users = [];
@@ -114,4 +124,4 @@ const setDetails = async (req, res) => {
         status: "BAD"
     });
 };
-export { chat as chat, me as me, message as message, update as update, idUser as user, details as details, setDetails as setDetails, idImg as idImg };
+export { chat as chat, me as me, message as message, update as update, idUser as user, details as details, setDetails as setDetails, idImg as idImg, messageUser as msgUser };

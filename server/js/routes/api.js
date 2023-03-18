@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyparser from "body-parser";
 import cookieparser from "cookie-parser";
 import fileupload from "express-fileupload";
-import { user, chat, message, me, update, details, setDetails, idImg } from "../controllers/Chat.js";
+import { user, chat, msgUser, message, me, update, details, setDetails, idImg } from "../controllers/Chat.js";
 import { Profile } from '../controllers/UpdateProfile.js';
 /*const express = require('express');
 const cors = require('cors');*/
@@ -32,5 +32,6 @@ app.post('/details', details);
 app.post('/setDetails', setDetails);
 app.post('/changeProfile', Profile);
 app.post('/idImg', idImg);
+app.post('/msgUser', msgUser);
 export default app;
 console.log(799);
