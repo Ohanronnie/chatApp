@@ -1,5 +1,5 @@
-/api/* https://chat-end.onrender.com/:splat
+/api/* https://chat-end.onrender.com/api/:splat
 /register/login /index.html 200
 /register/signup /index.html 200
-/register/* https://chat-end.onrender.com/:splat
+/register/* https://chat-end.onrender.com/register/:splat
 /*    /index.html  200
