@@ -1,0 +1,2 @@
+/api/*  https://chat-end.onrender.com/:splat  200
+/register/*  https://chat-end.onrender.com/:splat  200
