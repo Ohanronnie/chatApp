@@ -29,7 +29,7 @@ const Register =  () => {
    let response = await result.json();*/
    //response.push(null);
    useEffect(function (){ fetch('/register/userlist',{
-       method: "post"
+       method: "POST"
    }).then(response => response.json()).then(data => setTest(data))
    },[])
   return (
@@ -64,7 +64,7 @@ const Register =  () => {
             .required('Required'),
         })}
         onSubmit={(values, { setSubmitting}, ...rest) => {
-          axios({url:'http://localhost:8080/register/signup',
+          axios({url:'/register/signup',
            method: 'post',
            data: values
           });
