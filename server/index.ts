@@ -10,7 +10,9 @@ import cookieparser from "cookie-parser";
 import api from "./routes/api.js";
 import Chat from "./model/Chat.js";
 import User from "./model/User.js";
+import cookie from "cookie";
 const app = express();
+app.use('/images',express.static('files'));
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://localhost:8080"],
@@ -18,6 +20,32 @@ app.use(
   })
 );
 app.use(cookieparser("tp07089314662"));
+app.use(async (req,res,next): Promise<any> => {
+  let mail = req.signedCookies?.c_user?.mail;
+  let pass = req.signedCookies?.c_user?.pass;
+  let auth = await User.findOne({email: mail,pass: pass});
+  if(req.originalUrl === '/'){
+  if(!mail || !pass){
+    res.json({
+      status: "BAD"
+    });
+    console.log(899999);
+    
+  }
+  else if(!mail && !pass){
+//    res.redirect('/register/login');
+    console.log(Date.now())
+  }
+  else if(mail && pass && auth){
+    
+    next();
+  }
+  } else if(req.originalUrl === '/register/userlist' || req.originalUrl === '/register/login' || req.originalUrl === '/register/signup'){
+    next();
+  } else if(mail && pass && auth){
+    next()
+  }
+})
 const server = http.createServer(app);
 const PORT = process.env.PORT || 8080;
 (async () => {
@@ -29,9 +57,11 @@ const io = new Server(server, {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
+  cookie: true
 });
 io.on("connection", (socket) => {
   console.log(`${socket.id} just connected`);
+//  var cookief = socket.handshake.headers.cookie; 
   socket.on("disconnect", (data?: any) => {
     console.log("a user just disconnect");
   });
@@ -66,7 +96,6 @@ io.on("connection", (socket) => {
       });
 
       const response = await result.save();
-      
     }
     if (!senderUser) {
       const result = new Chat({
@@ -86,18 +115,26 @@ io.on("connection", (socket) => {
           ],
         },
       });
-
+      socket.emit('new_message',{...data, createdAt: date})
       const response = await result.save();
       return;
     }
 
+    console.log(user!.chats!.message);
     user!.chats!.message.forEach(async (e: any) => {
       if (e.hasOwnProperty(data.from)) {
         e[data.from].push({
           ...data,
           createdAt: date,
         });
-        socket.emit('new_message',{...data,createdAt: date})
+        //socket.emit("new_message", { ...data, createdAt: date });
+      }
+      else if(!e.hasOwnProperty(data.from)){
+        e[data.from] = [{
+          ...data,
+          createdAt: date
+        }];
+        //socket.emit("new_message", {...data, createdAt: date})
       }
     });
     senderUser!.chats!.message.forEach(async (e: any) => {
@@ -106,6 +143,14 @@ io.on("connection", (socket) => {
           ...data,
           createdAt: date,
         });
+        socket.emit("new_message", {...data, createdAt: date })
+      }
+      else if(!e.hasOwnProperty(data.to)){
+        e[data.to] = [{
+          ...date,
+          createdAt: date
+        }];
+        socket.emit("new_message", {...data, createdAt: date})
       }
     });
     try {
@@ -116,12 +161,12 @@ io.on("connection", (socket) => {
     }
   });
 });
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.json({
     name: "Hello world",
     c: req.cookies,
   });
-});
+});*/
 app!.use("/register", signup);
 app!.use("/api", api);
 server.listen(PORT, () => {

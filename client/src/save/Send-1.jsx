@@ -1,6 +1,7 @@
 import { useState,useReducer,useEffect,useRef } from 'react';
 import axios from 'axios';
 import './out.css';
+import reduce from './try.js';
 axios.defaults.withCredentials = true;
 //const me = await axios.post('/api/me',{key: Math.random()});
 const reducer = (state,action) => {
@@ -42,15 +43,12 @@ function SendMessage({ socket }){
   const sendBox = useRef(null);
   const msgBox = useRef(null);
   const box = useRef(null);
-  const [client,setClient] = useState("");
   useEffect(() => {
     (async function(){
       const temp = allMessages.length === 0 ? await axios.post('/api/message',{url: url}) : null;
       allMessages.length === 0 && msgBox.current?.scrollIntoView({ behavior: 'smooth' });
       allMessages.length === 0 && dispatch({type: 'ALL',body: temp.data})
   //    allMessages.length === 0 && alert(JSON.stringify(temp.data,null,2))
-      const clientName = await axios.post('/api/msgUser',{url: url});
-      setClient(`${clientName.data.firstName} ${clientName.data.lastName}`);
     })();
     socket.on('new_message',(data) => {
       sendBox.current.value = "";
@@ -81,22 +79,31 @@ function SendMessage({ socket }){
     });
     sendBox.current.value = "";
     setMessage("");
-  }
-  let messa = allMessages.map(e => {
-    return !window.location.href.includes(e.from) ? (<><div className="p-2 max-w-200 mb-1 max-w-full rounded-md w-max ml-auto mr-0 rounded-tl-md rounded-tr-md rounded-bl-md bg-dark-blue">
-          <span ref={msgBox} className="text-sm text-white">{e.message}</span>
-    </div></>) : (<><div className="p-2 mb-1 rounded-md  max-w-200 w-max bg-gray-400 rounded-tl-md rounded-tr-md rounded-br-md">
-          <span ref={msgBox} className="text-sm text-white">{e.message}</span>
+  };
+  let messageSort = reduce(allMessages);
+//  alert(JSON.stringify(messageSort,null,2))
+  //let tryAll = messageSort.map(e => e.map(e => <div style={{borderRadius: "100%"}}>e</div>))
+  //
+  try{
+  let messa = messageSort.map(e => e.map(e => {return e.map(e => {
+    return !window.location.href.includes(e.from) ? (<><div className="p-2 max-w-200 mb-1 max-w-full w-max ml-auto mr-0 rounded-tl-md rounded-tr-md rounded-bl-md bg-dark-blue">
+          <span ref={msgBox} className="text-white">{e.message}</span>
+    </div></>) : (<><div className="p-2 mb-1 max-w-200 w-max bg-gray-400 rounded-tl-md rounded-tr-md rounded-br-md">
+          <span ref={msgBox} className="text-white">{e.message}</span>
     </div></>)
-    });
+    })}));
+    messa = messa.map(e => e.map(e => e.map(e => {return (<div style={{borderRadius: "10%",width: "aoto",height: "auto",backgroundColor: ["red","blue"][Math.floor(Math.random() * 2)]}}>{e}</div>)})));
+//
+    //
+  // alert(JSON.stringify(messa,null,2))
   return (
     <>
         <nav className="flex bg-dark-blue items-center h-12 mb-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" className="h-8 w-8 ml-2 mr-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" className="h-8 w-8 -mr-5 ml-2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
-        <h2 className="text-sm mx-auto text-white">
-          {client}
+        <h2 className="text-md text-white ml-11">
+            Chats
         </h2>
     </nav>
   <div className="mx-2" style={{"padding-bottom": "4rem"}}>
@@ -116,9 +123,11 @@ function SendMessage({ socket }){
 </button>
   </footer>
 </div>
+      
     {/*    <input ref={sendBox} style={{background: '#008FFF'}} type="text" onChange={(e) => setMessage(e.target.value)} value={message} placeholder="message..."/>
       <button style={{background: 'red'}} onClick={handleSubmit}>Submit</button>*/}
     </>
   )
+  } catch(err){alert(err)}
 }
 export default SendMessage

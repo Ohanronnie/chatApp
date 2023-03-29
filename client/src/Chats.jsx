@@ -14,13 +14,16 @@ function Chats({ socket }){
        const me = await axios.post('/api/me');
        if(data.from === me.data._id || data.to === me.data._id){
          const id = await axios.post('/api/userid');
+         const img = await axios.post('/api/idImg',data.from);
          const user = {
            _id: data.from,
            firstName: id.data.firstName,
            lastName: id.data.lastName,
            lastMessage: {
-             message: data.message
-           }
+             message: data.message,
+             createdAt: data.createdAt
+           },
+           cover: img.data.cover
          };
          setList(e => {
            const arr = [];
@@ -35,11 +38,13 @@ function Chats({ socket }){
        }
     })
   },[socket]);
-  const users =list.length !== 0 ? list.map(e => {
+  try{
+  const listSorted = list.sort((a,b) => new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime());
+  const users =list.length !== 0 ? listSorted.map(e => {
     return (
       <>
       <div className="items-center hover:animate-pulse mb-2 border-solid border-slate-300 flex h-12" onClick={() => {navigate('/chats/message/'+e._id)}}>
-        <img src="./image.jpg" className="rounded-full mx-2 h-10 w-10" alt=""/>
+        <img src={e.cover} className="rounded-full mx-2 h-10 w-10" alt=""/>
         <div className="flex flex-col">
             <strong className="text-slate-700 text-sm">{e.firstName}&nbsp;{e.lastName}</strong>
             <span className="text-sm text-slate-500">{e.lastMessage.message}</span>
@@ -48,6 +53,7 @@ function Chats({ socket }){
       </>
     )
   }) : null;
+  
      return (
      <>
      <nav className="flex bg-dark-blue items-center h-12 mb-2">
@@ -78,5 +84,6 @@ function Chats({ socket }){
     </footer>
     </>
     )
+  } catch(err){alert(err)}
 }
 export default Chats

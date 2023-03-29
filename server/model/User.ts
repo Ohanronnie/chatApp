@@ -24,6 +24,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isOnline: {
+    type: Boolean,
+    default: true
+  },
+  cover: {
+    type: String,
+    default: "/images/OH-IMG.jpg"
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
