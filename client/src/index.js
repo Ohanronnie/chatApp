@@ -14,7 +14,7 @@ import {BrowserRouter,Routes,Route,useNavigate} from "react-router-dom";
 import App from './App';
 import io  from 'socket.io-client';
 import axios from 'axios';
-const socket = io.connect('http://localhost:8080');
+const socket = io.connect('https://chat-end.onrender.com');
 //import axios from 'axios';
 export default function Note(){
 //  const navigate = useNavigate();
