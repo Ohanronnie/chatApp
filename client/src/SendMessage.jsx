@@ -55,6 +55,7 @@ function SendMessage({ socket }){
     socket.on('new_message',(data) => {
       sendBox.current.value = "";
 //      setMessage("");
+      alert(777)
       axios.post('/api/me',{key: Math.random()}).then(r => {
       alert(77);
       if(data.to === r.data._id || data.from === r.data._id){
