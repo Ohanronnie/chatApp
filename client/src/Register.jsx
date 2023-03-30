@@ -68,10 +68,11 @@ const Register =  () => {
            method: 'post',
            data: values
           });
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+          navigate('/register/login');
+/*          setTimeout(() => {
+//            alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
-          }, 400);
+          }, 400);*/
          
         }}
       >{({isSubmitting}) => (
