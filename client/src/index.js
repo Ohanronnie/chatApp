@@ -20,7 +20,7 @@ export default function Note(){
 //  const navigate = useNavigate();
 (async ()=>{
   let resp = await axios.post('/');
-  if(resp.data?.status === "BAD" && window.location.href !== 'https://chat-end.onrender.com/register/login' && window.location.href !== 'https://chat-end.onrender.com/register/signup' && window.location.href !== 'https://chat-end.onrender.com/'){
+  if(resp.data?.status === "BAD" && window.location.href !== 'https://chat-sphere.netlify.app/register/login' && window.location.href !== 'https://chat-sphere.netlify.app/register/signup' && window.location.href !== 'https://chat-sphere.netlify.app/'){
     window.location = '/register/login';
   }
 })();
