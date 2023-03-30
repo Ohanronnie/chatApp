@@ -3,4 +3,4 @@
 /register/signup 200! GET /index.html 200
 /register/* https://chat-end.onrender.com/register/:splat 200
 /* 200! GET /index.html  200
-/ https://chat-end.onrender.com/ 200
+
