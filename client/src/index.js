@@ -19,8 +19,8 @@ const socket = io.connect('https://chat-end.onrender.com');
 export default function Note(){
 //  const navigate = useNavigate();
 (async ()=>{
-  let resp = await axios.get('/');
-  if(resp.data?.status === "BAD" && window.location.href !== 'http://localhost:3000/register/login' && window.location.href !== 'http://localhost:3000/register/signup' && window.location.href !== 'http://localhost:3000/'){
+  let resp = await axios.post('/');
+  if(resp.data?.status === "BAD" && window.location.href !== 'https://chat-end.onrender.com/register/login' && window.location.href !== 'https://chat-end.onrender.com/register/signup' && window.location.href !== 'https://chat-end.onrender.com/'){
     window.location = '/register/login';
   }
 })();
