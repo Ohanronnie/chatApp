@@ -19,7 +19,7 @@ const socket = io.connect('https://chat-end.onrender.com');
 export default function Note(){
 //  const navigate = useNavigate();
 (async ()=>{
-  let resp = await axios.post('/');
+  let resp = await axios.get('https://chat-end.onrender.com/');
   if(resp.data?.status === "BAD" && window.location.href !== 'https://chat-sphere.netlify.app/register/login' && window.location.href !== 'https://chat-sphere.netlify.app/register/signup' && window.location.href !== 'https://chat-sphere.netlify.app/'){
     window.location = '/register/login';
   }
