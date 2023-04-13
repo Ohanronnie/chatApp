@@ -15,7 +15,7 @@ const app = express();
 app.use('/images',express.static('files'));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:8080"],
+    origin: ["https://chat-sphere.netlify.app/", "https://chat-end.onrender.com/"],
     credentials: true,
   })
 );
@@ -49,12 +49,13 @@ app.use(async (req,res,next): Promise<any> => {
 const server = http.createServer(app);
 const PORT = process.env.PORT || 8080;
 (async () => {
-  let y = await Chat.find({});
-  console.log(JSON.stringify(y, null, 2));
+//  let y = await Chat.find({});
+ // console.log(JSON.stringify(y, null, 2));
+  console.log()
 })();
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://chat-sphere.netlify.app",
     methods: ["GET", "POST"],
   },
   cookie: true

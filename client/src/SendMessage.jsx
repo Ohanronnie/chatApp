@@ -22,7 +22,7 @@ const reducer = (state,action) => {
           return ([...action.body]);
           break;
         default:
-    //      alert(88);
+         alert(88);
      //     alert(JSON.stringify(state,null,2))
           return ([
             ...state,{
@@ -55,8 +55,9 @@ function SendMessage({ socket }){
     socket.on('new_message',(data) => {
       sendBox.current.value = "";
 //      setMessage("");
-      axios.post('/api/me',{key: Math.random()})
-        .then(r => {
+      alert(777)
+      axios.post('/api/me',{key: Math.random()}).then(r => {
+      alert(77);
       if(data.to === r.data._id || data.from === r.data._id){
       if(window.location.href.includes(data.from)){
         dispatch({type: 'OTHER',message: data.message,_id: r.data._id});

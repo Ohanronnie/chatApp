@@ -14,13 +14,13 @@ import {BrowserRouter,Routes,Route,useNavigate} from "react-router-dom";
 import App from './App';
 import io  from 'socket.io-client';
 import axios from 'axios';
-const socket = io.connect('http://localhost:8080');
+const socket = io.connect('https://chat-end.onrender.com');
 //import axios from 'axios';
 export default function Note(){
 //  const navigate = useNavigate();
 (async ()=>{
-  let resp = await axios.get('/');
-  if(resp.data?.status === "BAD" && window.location.href !== 'http://localhost:3000/register/login' && window.location.href !== 'http://localhost:3000/register/signup' && window.location.href !== 'http://localhost:3000/'){
+  let resp = await axios.get('https://chat-end.onrender.com/');
+  if(resp.data?.status === "BAD" && window.location.href !== 'https://chat-sphere.netlify.app/register/login' && window.location.href !== 'https://chat-sphere.netlify.app/register/signup' && window.location.href !== 'https://chat-sphere.netlify.app/'){
     window.location = '/register/login';
   }
 })();
